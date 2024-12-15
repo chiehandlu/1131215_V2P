@@ -1,5 +1,5 @@
 import streamlit as st
-from youtube_utils import get_video_info, download_subtitle
+from youtube_utils import get_video_info, download_subtitle, download_translated_subtitle
 from subtitle_processor import convert_subtitle, edit_subtitle
 from search_utils import search_keywords, generate_timestamps
 from database import save_to_database, load_from_database
@@ -10,17 +10,17 @@ def main():
     # 單支/批量影片字幕擷取
     st.header("字幕擷取")
     video_url = st.text_input("輸入 YouTube 影片 URL")
-    language = st.selectbox("選擇字幕語言", ["en", "zh-TW", "zh-CN", "ja", "ko"])
+    language = st.selectbox("選擇字幕語言", ["en", "zh", "zh-TW", "zh-CN", "ja", "ko"])
+    auto_translate = st.checkbox("使用自動翻譯 (如果原始字幕不可用)", value=True)
     
     if st.button("擷取字幕"):
         if video_url:
             with st.spinner('正在擷取字幕...'):
                 video_info = get_video_info(video_url)
                 if video_info:
-                    subtitle = download_subtitle(video_url, language)
+                    subtitle = download_subtitle(video_url, language, auto_translate)
                     if subtitle:
                         st.success(f"成功擷取 {video_info['title']} 的字幕")
-                        # 將字幕資料存儲到 session state
                         st.session_state['current_subtitle'] = subtitle
                         st.session_state['video_info'] = video_info
                     else:

@@ -23,6 +23,9 @@ wheels/
 # Virtualenv
 venv/
 ENV/
+testV2P/
+env/
+.env/
 
 # Jupyter Notebook
 .ipynb_checkpoints
